@@ -67,15 +67,5 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 
-  Widget _buildDot(int index) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
-      width: _currentPage == index ? 12 : 8,
-      height: _currentPage == index ? 12 : 8,
-      decoration: BoxDecoration(
-        color: _currentPage == index ? Colors.blue : Colors.grey,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
+
 }
