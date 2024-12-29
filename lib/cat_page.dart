@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'cat_info_page.dart';
+import 'coffee_page.dart';
 
 class CatPage extends StatelessWidget {
   final String selectedTime;
@@ -8,13 +9,37 @@ class CatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> cats = [
-      {'image': 'assets/cat1.PNG', 'name': 'Cat 1'},
-      {'image': 'assets/cat2.PNG', 'name': 'Cat 2'},
-      {'image': 'assets/cat3.PNG', 'name': 'Cat 3'},
-      {'image': 'assets/cat4.PNG', 'name': 'Cat 4'},
-      {'image': 'assets/cat5.PNG', 'name': 'Cat 5'},
-      {'image': 'assets/cat6.PNG', 'name': 'Cat 6'},
+    final List<Cat> cats = [
+      Cat(
+        name: 'Cat 1',
+        imagePath: 'assets/cat1.PNG',
+        description: 'Cat 1 is a playful and energetic companion.',
+      ),
+      Cat(
+        name: 'Cat 2',
+        imagePath: 'assets/cat2.PNG',
+        description: 'Cat 2 loves to relax in the sun all day.',
+      ),
+      Cat(
+        name: 'Cat 3',
+        imagePath: 'assets/cat3.PNG',
+        description: 'Cat 3 is a curious explorer who loves adventures.',
+      ),
+      Cat(
+        name: 'Cat 4',
+        imagePath: 'assets/cat4.PNG',
+        description: 'Cat 4 enjoys cuddles and quiet evenings.',
+      ),
+      Cat(
+        name: 'Cat 5',
+        imagePath: 'assets/cat5.PNG',
+        description: 'Cat 5 has a playful spirit and loves chasing toys.',
+      ),
+      Cat(
+        name: 'Cat 6',
+        imagePath: 'assets/cat6.PNG',
+        description: 'Cat 6 is an independent cat with a big personality.',
+      ),
     ];
 
     return Scaffold(
@@ -32,10 +57,7 @@ class CatPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CatInfoPage(
-                    catName: cat['name']!,
-                    imagePath: cat['image']!,
-                  ),
+                  builder: (context) => CatInfoPage(cat: cat),
                 ),
               );
             },
@@ -44,15 +66,15 @@ class CatPage extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
                   child: Image.asset(
-                    cat['image']!,
-                    fit: BoxFit.cover, // Bild wird proportional skaliert
-                    width: double.infinity, // Die Bilder nehmen die gesamte Breite ein
-                    height: 300, // Höhe erhöht auf 300 für größere Bilder
+                    cat.imagePath,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 300,
                   ),
                 ),
                 SizedBox(height: 8),
                 Text(
-                  cat['name']!,
+                  cat.name,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
@@ -63,4 +85,12 @@ class CatPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class Cat {
+  final String name;
+  final String imagePath;
+  final String description;
+
+  Cat({required this.name, required this.imagePath, required this.description});
 }
