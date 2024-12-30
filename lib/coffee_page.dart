@@ -41,7 +41,7 @@ class _CoffeePageState extends State<CoffeePage> {
             Text('Have a coffee?'),
             SizedBox(width: 8),
             Image.asset(
-              'Icons/icon-coffee-beans.png',
+              'assets/Icons/icon-coffee-beans.png',
               width: 30,
               height: 30,
             ),
@@ -133,7 +133,9 @@ class _CoffeePageState extends State<CoffeePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PaymentPage(selectedItems: quantities),
+                    builder: (context) => PaymentPage(
+                      selectedItems: quantities,
+                    ),
                   ),
                 );
               },

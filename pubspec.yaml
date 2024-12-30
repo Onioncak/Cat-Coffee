@@ -107,7 +107,12 @@ flutter:
     - assets/capuccino.jpg
     - assets/espresso.jpg
     - assets/milk.jpg
-    - Icons/
+    - assets/default_cat.jpg
+    - assets/payment_success.jpg
+    - assets/Icons/
+
+
+
 
 
 
