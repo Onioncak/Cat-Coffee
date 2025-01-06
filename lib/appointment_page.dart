@@ -3,9 +3,10 @@ import 'cat_page.dart';
 import 'package:intl/intl.dart'; // Für Datumsformatierung
 
 class AppointmentPage extends StatelessWidget {
-  final String location;
+     String location;
+     String adress;
 
-   AppointmentPage({Key? key, required this.location}) : super(key: key);
+   AppointmentPage({ required this.location, required this.adress}) ;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class AppointmentPage extends StatelessWidget {
             SizedBox(height: 8),
             // Anzeige der Straße
             Text(
-              'Euphener Straße 2',
+              '$adress',
               style: TextStyle(fontSize: 16, color: Colors.grey[700]),
             ),
             SizedBox(height: 20),
@@ -63,7 +64,7 @@ class AppointmentPage extends StatelessWidget {
                     ),
                     child: Text(
                       availableTimes[index],
-                      style: TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: 20),
                     ),
                   );
                 },

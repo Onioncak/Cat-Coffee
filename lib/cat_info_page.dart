@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'coffee_page.dart';
+import 'cat_page.dart'; // Importiere die Cat-Klasse
 
 class CatInfoPage extends StatelessWidget {
-  final String catName;
-  final String imagePath;
+  final Cat cat;
 
-  const CatInfoPage({Key? key, required this.catName, required this.imagePath})
-      : super(key: key);
+  const CatInfoPage({ required this.cat});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('$catName Info'),
+        title: Text(cat.name),
         backgroundColor: Colors.brown,
       ),
       body: Padding(
@@ -21,15 +21,38 @@ class CatInfoPage extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.asset(
-                imagePath,
+                cat.imagePath,
                 fit: BoxFit.cover,
+                width: double.infinity,
+                height: 300,
               ),
             ),
             SizedBox(height: 20),
-            Text(
-              'This is $catName. ',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.brown.shade100,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                cat.description,
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CoffeePage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+              child: Text(
+                'Lets take a Coffee',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
