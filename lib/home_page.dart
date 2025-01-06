@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'appointment_page.dart';
 
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -14,6 +15,7 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        AppointmentPage(location: 'Aachen'),
+                        AppointmentPage(location: 'Aachen', adress: 'Euphener Straße 2'),
                   ),
                 );
               },
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        AppointmentPage(location: 'Köln'),
+                        AppointmentPage(location: 'Köln', adress: 'Neumarkt 2-4' ,),
                   ),
                 );
               },

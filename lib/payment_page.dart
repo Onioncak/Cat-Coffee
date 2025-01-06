@@ -4,7 +4,7 @@ import 'invoice_page.dart';
 class PaymentPage extends StatefulWidget {
   final Map<String, int> selectedItems;
 
-  const PaymentPage({Key? key, required this.selectedItems}) : super(key: key);
+  const PaymentPage({ required this.selectedItems}) ;
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -35,6 +35,26 @@ class _PaymentPageState extends State<PaymentPage> {
     };
 
     return prices[productName] ?? 0.0;
+  }
+
+  void _showWarningDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Warning'),
+          content: Text('Please select a payment method before completing the payment.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Schließt den Dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -72,7 +92,7 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
             ),
             SizedBox(height: 20),
-            Divider(),  // Trennlinie vor der Total-Anzeige
+            Divider(), // Trennlinie vor der Total-Anzeige
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -115,12 +135,13 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                       ),
                     );
+                  } else {
+                    _showWarningDialog(); // Zeige Warnung, wenn keine Zahlungsmethode ausgewählt wurde
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                 ),
                 child: Text(
                   '  Complete Payment  ',

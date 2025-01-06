@@ -16,12 +16,32 @@ class _CoffeePageState extends State<CoffeePage> {
   };
 
   final Map<String, double> prices = {
-    'Black Coffee': 2.5,
+    'Black Coffee': 2.7,
     'Cacao': 3.0,
-    'Cappuccino': 4.0,
+    'Cappuccino': 4.5,
     'Espresso': 2.0,
-    'Milk': 1.5,
+    'Milk': 1.2,
   };
+
+  void _showWarningDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Warning'),
+          content: Text('Please choose a drink before proceeding to payment.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Schließt den Dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +56,7 @@ class _CoffeePageState extends State<CoffeePage> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text('Have a coffee?'),
             SizedBox(width: 8),
@@ -130,18 +150,23 @@ class _CoffeePageState extends State<CoffeePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentPage(
-                      selectedItems: quantities,
+                final totalQuantity = quantities.values.reduce((a, b) => a + b);
+                if (totalQuantity == 0) {
+                  _showWarningDialog(); // Zeige Warnung
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentPage(
+                        selectedItems: quantities,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown,
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
               ),
               child: Text(
                 '  Proceed to Payment  ',

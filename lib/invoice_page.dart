@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'home_page.dart';
 
 class InvoicePage extends StatelessWidget {
   final Map<String, int> selectedItems;
@@ -6,81 +8,73 @@ class InvoicePage extends StatelessWidget {
   final String paymentMethod;
 
   const InvoicePage({
-    Key? key,
     required this.selectedItems,
     required this.totalAmount,
     required this.paymentMethod,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final selectedProducts = selectedItems.entries
-        .where((entry) => entry.value > 0)
-        .toList();
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Invoice Page'),
-        backgroundColor: Colors.brown,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Invoice:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: selectedProducts.length,
-                itemBuilder: (context, index) {
-                  final item = selectedProducts[index];
-                  final price = _getPrice(item.key);
-                  return ListTile(
-                    title: Text(item.key),
-                    trailing: Text('x${item.value} - €${(price * item.value).toStringAsFixed(2)}'),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-            Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(height: 150), // Abstand von oben
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  'Total:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                // Bild in der Mitte
+                Image.asset(
+                  'assets/payment_success.png',
+                  width: 200,
+                  height: 200,
                 ),
-                Text(
-                  '€${totalAmount.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                // JSON-Animation direkt unter dem Bild
+                Lottie.asset(
+                  'assets/Animation - Payment.json',
+                  width: 300,
+                  height: 300,
+                  repeat: false,
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text(
-              'Payment Method: $paymentMethod',
-              style: TextStyle(fontSize: 18),
+          ),
+          // Button unten in der Mitte
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 50.0, // Abstand von unten
             ),
-          ],
-        ),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                      (route) => false, // Entfernt alle vorherigen Routen
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                fixedSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              child: Text(
+                ' Thank You for Payment ',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
-  }
-
-  double _getPrice(String productName) {
-    final prices = {
-      'Black Coffee': 2.5,
-      'Cacao': 3.0,
-      'Cappuccino': 4.0,
-      'Espresso': 2.0,
-      'Milk': 1.5,
-    };
-
-    return prices[productName] ?? 0.0;
   }
 }

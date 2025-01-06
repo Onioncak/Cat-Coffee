@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.0
+  lottie: ^2.0.0
 
 
 
@@ -108,8 +109,9 @@ flutter:
     - assets/espresso.jpg
     - assets/milk.jpg
     - assets/default_cat.jpg
-    - assets/payment_success.jpg
+    - assets/payment_success.png
     - assets/Icons/
+    - assets/Animation - Payment.json
 
 
 

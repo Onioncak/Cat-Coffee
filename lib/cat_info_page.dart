@@ -5,7 +5,7 @@ import 'cat_page.dart'; // Importiere die Cat-Klasse
 class CatInfoPage extends StatelessWidget {
   final Cat cat;
 
-  const CatInfoPage({Key? key, required this.cat}) : super(key: key);
+  const CatInfoPage({ required this.cat});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class CatInfoPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
               child: Text(
-                'Go to Coffee Page',
+                'Lets take a Coffee',
                 style: TextStyle(color: Colors.white),
               ),
             ),
