@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'coffee_page.dart';
 import 'cat_page.dart'; // Importiere die Cat-Klasse
@@ -5,7 +6,7 @@ import 'cat_page.dart'; // Importiere die Cat-Klasse
 class CatInfoPage extends StatelessWidget {
   final Cat cat;
 
-  const CatInfoPage({ required this.cat});
+  const CatInfoPage({super.key,  required this.cat});
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +28,30 @@ class CatInfoPage extends StatelessWidget {
                 height: 300,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.brown.shade100,
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Text(
                 cat.description,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CoffeePage()),
+                  MaterialPageRoute(builder: (context) => const coffee_page()),
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
-              child: Text(
-                'Lets take a Coffee',
+              child: const Text(
+                'Order a drink',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -60,3 +61,5 @@ class CatInfoPage extends StatelessWidget {
     );
   }
 }
+
+ */

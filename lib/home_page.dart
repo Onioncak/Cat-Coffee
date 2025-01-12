@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'appointment_page.dart';
-
+import 'appointment.dart';
 
 class HomePage extends StatefulWidget {
+  final Appointment? appointment;
+
+  const HomePage({Key? key, this.appointment}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -16,62 +20,101 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cat Coffee'),
-        backgroundColor: Colors.brown, // Braune AppBar
+        title: const Text('Cat Caffee'),
+        backgroundColor: Colors.brown,
       ),
       body: Center(
         child: _selectedIndex == 0
             ? Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Choose your location',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AppointmentPage(location: 'Aachen', adress: 'Euphener Straße 2'),
+                    builder: (context) => AppointmentPage(
+                      location: 'Aachen',
+                      address: 'Euphener Straße 2',
+                    ),
                   ),
                 );
               },
-              child: Text('Aachen 8:00-17:00'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown,
-                foregroundColor: Colors.white
+                foregroundColor: Colors.white,
               ),
+              child: const Text('Aachen 8:00-17:00'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AppointmentPage(location: 'Köln', adress: 'Neumarkt 2-4' ,),
+                    builder: (context) => AppointmentPage(
+                      location: 'Köln',
+                      address: 'Neumarkt 2-4',
+                    ),
                   ),
                 );
               },
-              child: Text('Köln 8:00-17:00    '),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown,
-                foregroundColor: Colors.white
+                foregroundColor: Colors.white,
               ),
+              child: const Text('Köln 8:00-17:00'),
             ),
           ],
         )
-            : Center(
+            : widget.appointment != null
+            ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Your Reservation:',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Location: ${widget.appointment!.place}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            Text(
+              'Cat: ${widget.appointment!.cat}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            Text(
+              'Date: ${widget.appointment!.startTime.toLocal().toString().split(' ')[0]}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            Text(
+              'Time: ${widget.appointment!.startTime.toLocal().toString().split(' ')[1].substring(0, 5)} - ${widget.appointment!.endTime.toLocal().toString().split(' ')[1].substring(0, 5)}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Drinks:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            ...widget.appointment!.drinks.map((drink) => Text(
+              drink,
+              style: const TextStyle(fontSize: 18),
+            )).toList(),
+          ],
+        )
+            : const Center(
           child: Text(
-            'Appointment Page Placeholder',
+            'No reservations made yet.',
             style: TextStyle(fontSize: 18),
           ),
         ),

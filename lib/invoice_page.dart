@@ -1,79 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
+import 'appointment.dart';
+import 'package:lottie/lottie.dart';
 
 class InvoicePage extends StatelessWidget {
-  final Map<String, int> selectedItems;
+  final String selectedTime;
+  final String location;
+  final String address;
+  final DateTime selectedDate;
+  final String selectedCat;
+  final Map<String, int> selectedDrinks;
   final double totalAmount;
   final String paymentMethod;
 
-  const InvoicePage({
-    required this.selectedItems,
+  InvoicePage({
+    required this.selectedTime,
+    required this.location,
+    required this.address,
+    required this.selectedDate,
+    required this.selectedCat,
+    required this.selectedDrinks,
     required this.totalAmount,
     required this.paymentMethod,
   });
 
+  Future<void> _saveReservation(BuildContext context) async {
+    final DateTime startTime = DateTime.parse('${selectedDate.toIso8601String().split('T')[0]} $selectedTime:00');
+    final DateTime endTime = startTime.add(Duration(minutes: 59));
+    final List<String> selectedDrinksList = selectedDrinks.entries
+        .where((entry) => entry.value > 0)
+        .map((entry) => '${entry.key} x${entry.value}')
+        .toList();
+    final Appointment appointment = Appointment(
+      id: DateTime.now().toString(),
+      startTime: startTime,
+      endTime: endTime,
+      place: location,
+      cat: selectedCat,
+      drinks: selectedDrinksList,
+    );
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastReservation', appointment.id);
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(appointment: appointment)),
+          (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(height: 150), // Abstand von oben
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Bild in der Mitte
-                Image.asset(
-                  'assets/payment_success.png',
-                  width: 200,
-                  height: 200,
-                ),
-                // JSON-Animation direkt unter dem Bild
-                Lottie.asset(
-                  'assets/Animation - Payment.json',
-                  width: 300,
-                  height: 300,
-                  repeat: false,
-                ),
-              ],
-            ),
-          ),
-          // Button unten in der Mitte
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 50.0, // Abstand von unten
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                      (route) => false, // Entfernt alle vorherigen Routen
-                );
-              },
+      appBar: AppBar(
+        title: const Text('Invoice Page'),
+        backgroundColor: Colors.brown,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset('assets/Animation - Payment.json'),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _saveReservation(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                fixedSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               ),
-              child: Text(
-                ' Thank You for Payment ',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              child: const Text(
+                'Back to Home',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

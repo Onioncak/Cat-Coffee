@@ -1,179 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'payment_page.dart';
 
-class CoffeePage extends StatefulWidget {
+class coffee_page extends StatefulWidget {
+  final String selectedTime;
+  final String location;
+  final String address;
+  final DateTime selectedDate;
+  final String selectedCat;
+
+  coffee_page({
+    required this.selectedTime,
+    required this.location,
+    required this.address,
+    required this.selectedDate,
+    required this.selectedCat,
+  });
+
   @override
-  _CoffeePageState createState() => _CoffeePageState();
+  _coffee_pageState createState() => _coffee_pageState();
 }
 
-class _CoffeePageState extends State<CoffeePage> {
-  final Map<String, int> quantities = {
+class _coffee_pageState extends State<coffee_page> {
+  final Map<String, int> _selectedDrinks = {
+    'Espresso': 0,
+    'Milk': 0,
     'Black Coffee': 0,
     'Cacao': 0,
     'Cappuccino': 0,
-    'Espresso': 0,
-    'Milk': 0,
   };
 
-  final Map<String, double> prices = {
-    'Black Coffee': 2.7,
-    'Cacao': 3.0,
-    'Cappuccino': 4.5,
+  final Map<String, double> _drinkPrices = {
     'Espresso': 2.0,
-    'Milk': 1.2,
+    'Milk': 1.5,
+    'Black Coffee': 2.5,
+    'Cacao': 3.0,
+    'Cappuccino': 4.0,
   };
 
-  void _showWarningDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Warning'),
-          content: Text('Please choose a drink before proceeding to payment.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Schließt den Dialog
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
+  void _incrementDrink(String drink) {
+    setState(() {
+      _selectedDrinks[drink] = (_selectedDrinks[drink] ?? 0) + 1;
+    });
+  }
+
+  void _decrementDrink(String drink) {
+    setState(() {
+      if (_selectedDrinks[drink]! > 0) {
+        _selectedDrinks[drink] = (_selectedDrinks[drink] ?? 0) - 1;
+      }
+    });
+  }
+
+  void _goToPayment() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentPage(
+          selectedTime: widget.selectedTime,
+          location: widget.location,
+          address: widget.address,
+          selectedDate: widget.selectedDate,
+          selectedCat: widget.selectedCat,
+          selectedDrinks: _selectedDrinks,
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> coffeeItems = [
-      {'image': 'assets/black_coffee.JPG', 'name': 'Black Coffee'},
-      {'image': 'assets/cacao.jpg', 'name': 'Cacao'},
-      {'image': 'assets/capuccino.jpg', 'name': 'Cappuccino'},
-      {'image': 'assets/espresso.jpg', 'name': 'Espresso'},
-      {'image': 'assets/milk.jpg', 'name': 'Milk'},
-    ];
-
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Have a coffee?'),
-            SizedBox(width: 8),
-            Image.asset(
-              'assets/Icons/icon-coffee-beans.png',
-              width: 30,
-              height: 30,
-            ),
-          ],
-        ),
+        title: Text('Select Drinks'),
         backgroundColor: Colors.brown,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                itemCount: coffeeItems.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Zwei Spalten
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 3 / 4, // Verhältnis der Breite zur Höhe
-                ),
-                itemBuilder: (context, index) {
-                  final item = coffeeItems[index];
-                  final name = item['name']!;
-                  final imagePath = item['image']!;
-                  final price = prices[name] ?? 0.0;
-
-                  return Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+      body: ListView(
+        children: _selectedDrinks.keys.map((drink) {
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/${drink.toLowerCase().replaceAll(' ', '_')}.jpg',
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.asset(
-                            imagePath,
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: double.infinity,
-                          ),
+                        Text(
+                          drink,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          name,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '${price.toStringAsFixed(2)} €',
-                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (quantities[name]! > 0) {
-                                    quantities[name] = quantities[name]! - 1;
-                                  }
-                                });
-                              },
-                              icon: Icon(Icons.remove),
-                              color: Colors.brown,
-                            ),
-                            Text(
-                              '${quantities[name]}',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  quantities[name] = quantities[name]! + 1;
-                                });
-                              },
-                              icon: Icon(Icons.add),
-                              color: Colors.brown,
-                            ),
-                          ],
+                          '${_drinkPrices[drink]!.toStringAsFixed(2)} €',
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
-                  );
-                },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: () => _decrementDrink(drink),
+                  ),
+                  Text(
+                    '${_selectedDrinks[drink]}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => _incrementDrink(drink),
+                  ),
+                ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                final totalQuantity = quantities.values.reduce((a, b) => a + b);
-                if (totalQuantity == 0) {
-                  _showWarningDialog(); // Zeige Warnung
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentPage(
-                        selectedItems: quantities,
-                      ),
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown,
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-              ),
-              child: Text(
-                '  Proceed to Payment  ',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
-          ],
+          );
+        }).toList(),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          onPressed: _goToPayment,
+          child: const Text('Proceed to Payment'),
         ),
       ),
     );

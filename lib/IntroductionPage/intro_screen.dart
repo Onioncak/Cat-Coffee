@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../home_page.dart';
 
 class IntroScreen extends StatefulWidget {
+  const IntroScreen({super.key});
+
   @override
   _IntroScreenState createState() => _IntroScreenState();
 }
@@ -16,7 +18,7 @@ class _IntroScreenState extends State<IntroScreen> {
     await prefs.setBool('hasSeenIntro', true);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 
@@ -39,17 +41,17 @@ class _IntroScreenState extends State<IntroScreen> {
       bottomSheet: _currentPage == 2
           ? ElevatedButton(
         onPressed: _completeIntro,
-        child: Text(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(double.infinity, 60),
+          backgroundColor: Colors.blue,
+        ),
+        child: const Text(
           'Get Started',
           style: TextStyle(
             color: Colors.white, // Weißer Text
             fontWeight: FontWeight.bold, // Fetter Text
             fontSize: 30, // Optionale Schriftgröße
           ),
-        ),
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(double.infinity, 60),
-          backgroundColor: Colors.blue,
         ),
       )
           : null, // Kein Bottom Sheet für die ersten beiden Seiten

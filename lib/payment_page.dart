@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 import 'invoice_page.dart';
 
 class PaymentPage extends StatefulWidget {
-  final Map<String, int> selectedItems;
+  final String selectedTime;
+  final String location;
+  final String address;
+  final DateTime selectedDate;
+  final String selectedCat;
+  final Map<String, int> selectedDrinks;
 
-  const PaymentPage({ required this.selectedItems}) ;
+  PaymentPage({
+    required this.selectedTime,
+    required this.location,
+    required this.address,
+    required this.selectedDate,
+    required this.selectedCat,
+    required this.selectedDrinks,
+  });
 
   @override
   _PaymentPageState createState() => _PaymentPageState();
@@ -17,14 +29,13 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   void initState() {
     super.initState();
-    // Berechne die Gesamtsumme der Bestellung
-    totalAmount = widget.selectedItems.entries.fold(0.0, (sum, entry) {
+    totalAmount = widget.selectedDrinks.entries.fold(0.0, (sum, entry) {
       final price = _getPrice(entry.key);
       return sum + (price * entry.value);
     });
+    totalAmount += 10.0; // Adding 10 euros charge for cat reservation
   }
 
-  // Funktion, um den Preis für jedes Produkt zu erhalten
   double _getPrice(String productName) {
     final prices = {
       'Black Coffee': 2.5,
@@ -42,14 +53,14 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Warning'),
-          content: Text('Please select a payment method before completing the payment.'),
+          title: const Text('Warning'),
+          content: const Text('Please select a payment method before completing the payment.'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Schließt den Dialog
+                Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -57,57 +68,86 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
+  void _finalizePayment() {
+    if (selectedPaymentMethod != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InvoicePage(
+            selectedTime: widget.selectedTime,
+            location: widget.location,
+            address: widget.address,
+            selectedDate: widget.selectedDate,
+            selectedCat: widget.selectedCat,
+            selectedDrinks: widget.selectedDrinks,
+            totalAmount: totalAmount,
+            paymentMethod: selectedPaymentMethod!,
+          ),
+        ),
+      );
+    } else {
+      _showWarningDialog();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final selectedProducts = widget.selectedItems.entries
+    final selectedProducts = widget.selectedDrinks.entries
         .where((entry) => entry.value > 0)
         .toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment Page'),
+        title: const Text('Payment Page'),
         backgroundColor: Colors.brown,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Your Order:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: selectedProducts.length,
-                itemBuilder: (context, index) {
+            const SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: selectedProducts.length + 1, // Adding 1 for the cat reservation
+              itemBuilder: (context, index) {
+                if (index < selectedProducts.length) {
                   final item = selectedProducts[index];
                   final price = _getPrice(item.key);
                   return ListTile(
                     title: Text(item.key),
                     trailing: Text('x${item.value}  ${(_getPrice(item.key) * item.value).toStringAsFixed(2)} €'),
                   );
-                },
-              ),
+                } else {
+                  return ListTile(
+                    title: Text('Cat reservation (${widget.selectedCat})'),
+                    trailing: Text('x1  10.00 €'),
+                  );
+                }
+              },
             ),
-            SizedBox(height: 20),
-            Divider(), // Trennlinie vor der Total-Anzeige
+            const SizedBox(height: 20),
+            const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Total:',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${totalAmount.toStringAsFixed(2)}€',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Choose Payment Method:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -119,31 +159,16 @@ class _PaymentPageState extends State<PaymentPage> {
                 _buildPaymentMethodIcon('icons_credit_card.png', 'Credit Card'),
               ],
             ),
-            Spacer(),
+            const SizedBox(height: 20),
             Align(
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
-                onPressed: () {
-                  if (selectedPaymentMethod != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => InvoicePage(
-                          selectedItems: widget.selectedItems,
-                          totalAmount: totalAmount,
-                          paymentMethod: selectedPaymentMethod!,
-                        ),
-                      ),
-                    );
-                  } else {
-                    _showWarningDialog(); // Zeige Warnung, wenn keine Zahlungsmethode ausgewählt wurde
-                  }
-                },
+                onPressed: _finalizePayment,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                 ),
-                child: Text(
+                child: const Text(
                   '  Complete Payment  ',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
@@ -174,7 +199,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 height: 50,
               ),
               if (isSelected)
-                Positioned(
+                const Positioned(
                   top: 0,
                   right: 0,
                   child: Icon(
@@ -185,7 +210,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(paymentMethod),
         ],
       ),
