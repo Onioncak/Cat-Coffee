@@ -29,52 +29,34 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: _selectedIndex == 0
-            ? Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Choose your location',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AppointmentPage(
-                      location: 'Aachen',
-                      address: 'Euphener Straße 2',
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown,
-                foregroundColor: Colors.white,
+            ? SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Choose your location',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
-              child: const Text('Aachen 8:00-17:00'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AppointmentPage(
-                      location: 'Köln',
-                      address: 'Neumarkt 2-4',
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.brown,
-                foregroundColor: Colors.white,
+              const SizedBox(height: 20),
+              _buildLocationCard(
+                context,
+                'Gutrud Fritz',
+                'A cozy place for senior citizens to enjoy coffee with cats.',
+                'assets/Seniorin.jpg',
+                'Aachen',
+                'Euphener Straße 2',
               ),
-              child: const Text('Köln 8:00-17:00'),
-            ),
-          ],
+              const SizedBox(height: 10),
+              _buildLocationCard(
+                context,
+                'Katzen Kaffe Aachen',
+                'A popular cat cafe in Aachen with a variety of drinks.',
+                'assets/cat_caffee.jpg',
+                'Köln',
+                'Neumarkt 2-4',
+              ),
+            ],
+          ),
         )
             : widget.appointment != null
             ? Column(
@@ -133,6 +115,42 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.brown,
         onTap: _onItemTapped,
+      ),
+    );
+  }
+
+  Widget _buildLocationCard(BuildContext context, String title, String description, String imagePath, String location, String address) {
+    return Card(
+      child: Column(
+        children: [
+          Image.asset(imagePath),
+          ListTile(
+            title: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            subtitle: Text(description),
+          ),
+          ButtonBar(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppointmentPage(
+                        location: location,
+                        address: address,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Book Now'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
