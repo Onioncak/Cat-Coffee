@@ -43,7 +43,6 @@ class InvoicePage extends StatelessWidget {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lastReservation', appointment.id);
-
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => HomePage(appointment: appointment)),

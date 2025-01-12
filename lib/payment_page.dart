@@ -25,6 +25,7 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   String? selectedPaymentMethod;
   double totalAmount = 0.0;
+  double locationCharge = 0.0;
 
   @override
   void initState() {
@@ -33,7 +34,8 @@ class _PaymentPageState extends State<PaymentPage> {
       final price = _getPrice(entry.key);
       return sum + (price * entry.value);
     });
-    totalAmount += 10.0; // Adding 10 euros charge for cat reservation
+    locationCharge = widget.location == 'Aachen' ? 5.0 : 10.0;
+    totalAmount += locationCharge; // Adding location-based charge
   }
 
   double _getPrice(String productName) {
@@ -114,7 +116,7 @@ class _PaymentPageState extends State<PaymentPage> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: selectedProducts.length + 1, // Adding 1 for the cat reservation
+              itemCount: selectedProducts.length + 1, // Adding 1 for the location charge
               itemBuilder: (context, index) {
                 if (index < selectedProducts.length) {
                   final item = selectedProducts[index];
@@ -125,8 +127,8 @@ class _PaymentPageState extends State<PaymentPage> {
                   );
                 } else {
                   return ListTile(
-                    title: Text('Cat reservation (${widget.selectedCat})'),
-                    trailing: Text('x1  10.00 €'),
+                    title: Text('Location charge (${widget.location})'),
+                    trailing: Text('x1  ${locationCharge.toStringAsFixed(2)} €'),
                   );
                 }
               },

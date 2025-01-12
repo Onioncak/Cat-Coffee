@@ -16,7 +16,7 @@ class CatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Cat> cats = [
+    final List<Cat> allCats = [
       Cat(
         name: 'Whiskers',
         imagePath: 'assets/cat1.PNG',
@@ -48,6 +48,10 @@ class CatPage extends StatelessWidget {
         description: 'Bella is a gentle cat who loves to be petted.',
       ),
     ];
+
+    final List<Cat> cats = location == 'Stolberg'
+        ? allCats.sublist(2, 6)
+        : allCats.sublist(0, 2);
 
     return Scaffold(
       appBar: AppBar(
